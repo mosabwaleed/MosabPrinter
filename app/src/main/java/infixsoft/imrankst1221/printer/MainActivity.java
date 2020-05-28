@@ -15,6 +15,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import com.google.android.gms.ads.AdView;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -82,16 +84,18 @@ public class MainActivity extends Activity{
         Bitmap b = Bitmap.createBitmap(layout_content.getDrawingCache());
         layout_content.setDrawingCacheEnabled(false);
         try {
-            Bitmap bmp = toGrayscale(b);
+            Bitmap bmp = b;
             if(bmp!=null){
                 byte[] command = Utils.decodeBitmap(bmp);
                 outputStream.write(PrinterCommands.ESC_ALIGN_CENTER);
                 printText(command);
             }else{
+                Toast.makeText(MainActivity.this , "Print Photo error"+"the file isn't exists" , Toast.LENGTH_LONG).show();
                 Log.e("Print Photo error", "the file isn't exists");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this,"PrintTools"+ "the file isn't exists" , Toast.LENGTH_LONG).show();
             Log.e("PrintTools", "the file isn't exists");
         }
     }
@@ -144,17 +148,15 @@ public class MainActivity extends Activity{
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this, "on activity result" , Toast.LENGTH_LONG).show();
         }
     }
 
     public static Bitmap toGrayscale(Bitmap srcImage) {
-
         Bitmap bmpGrayscale = Bitmap.createBitmap(srcImage.getWidth(),
                 srcImage.getHeight(), Bitmap.Config.ARGB_8888);
-
         Canvas canvas = new Canvas(bmpGrayscale);
         Paint paint = new Paint();
-
         ColorMatrix cm = new ColorMatrix();
         cm.setSaturation(0);
         paint.setColorFilter(new ColorMatrixColorFilter(cm));
