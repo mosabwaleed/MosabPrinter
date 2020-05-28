@@ -8,7 +8,9 @@ import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +38,7 @@ public class MainActivity extends Activity{
         btnPrint = (Button)findViewById(R.id.btnPrint);
         layout_content = findViewById(R.id.layout_content);
         btnPrint.setOnClickListener(new OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 printDemo();
@@ -43,6 +46,7 @@ public class MainActivity extends Activity{
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     protected void printDemo() {
         if(btsocket == null){
             Intent BTIntent = new Intent(getApplicationContext(), DeviceList.class);
@@ -75,6 +79,7 @@ public class MainActivity extends Activity{
     }
 
     //print photo
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void printPhoto() {
         layout_content.setDrawingCacheEnabled(true);
         layout_content.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -84,7 +89,8 @@ public class MainActivity extends Activity{
         Bitmap b = Bitmap.createBitmap(layout_content.getDrawingCache());
         layout_content.setDrawingCacheEnabled(false);
         try {
-            Bitmap bmp = b;
+            Bitmap b2 = Bitmap.createScaledBitmap(b , 400, 200 , false);
+            Bitmap bmp = toGrayscale(b2);
             if(bmp!=null){
                 byte[] command = Utils.decodeBitmap(bmp);
                 outputStream.write(PrinterCommands.ESC_ALIGN_CENTER);
@@ -137,6 +143,7 @@ public class MainActivity extends Activity{
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
